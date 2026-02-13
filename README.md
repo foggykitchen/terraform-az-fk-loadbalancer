@@ -149,6 +149,7 @@ Balancer mechanics behind “magic” defaults.
 - [terraform-az-fk-vnet](https://github.com/mlinxfeld/terraform-az-fk-vnet)
 - [terraform-az-fk-compute](https://github.com/mlinxfeld/terraform-az-fk-compute)
 - [terraform-az-fk-nsg](https://github.com/mlinxfeld/terraform-az-fk-nsg)
+- [terraform-az-fk-natgw](https://github.com/mlinxfeld/terraform-az-fk-natgw)
 - [terraform-az-fk-disk](https://github.com/mlinxfeld/terraform-az-fk-disk)
 - [terraform-az-fk-storage](https://github.com/mlinxfeld/terraform-az-fk-storage)
 - [terraform-az-fk-aks](https://github.com/mlinxfeld/terraform-az-fk-aks)

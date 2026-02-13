@@ -28,7 +28,7 @@ This deployment includes:
 - One **Health Probe (TCP/80)**
 - One **Load Balancing Rule (TCP/80)**
 - One **VM Scale Set** running Linux + NGINX
-- A **NAT Gateway** for outbound internet access
+- A **NAT Gateway** (via `terraform-az-fk-natgw`) for outbound internet access
 
 All VMSS instances are automatically registered in the Load Balancer backend pool.
 

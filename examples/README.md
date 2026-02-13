@@ -95,6 +95,7 @@ The goal is **clarity and correctness**, not completeness.
 
 - [terraform-az-fk-loadbalancer](https://github.com/mlinxfeld/terraform-az-fk-loadbalancer) (this repository)
 - [terraform-az-fk-compute](https://github.com/mlinxfeld/terraform-az-fk-compute)
+- [terraform-az-fk-natgw](https://github.com/mlinxfeld/terraform-az-fk-natgw)
 - [terraform-az-fk-nsg](https://github.com/mlinxfeld/terraform-az-fk-nsg)
 - [terraform-az-fk-vnet](https://github.com/mlinxfeld/terraform-az-fk-vnet)
 - [terraform-az-fk-aks](https://github.com/mlinxfeld/terraform-az-fk-aks)

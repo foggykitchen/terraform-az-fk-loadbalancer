@@ -32,6 +32,7 @@ This deployment includes:
 - A **backend address pool** with VM NICs attached
 - A **TCP health probe**
 - A single **load balancing rule** (TCP/80 → TCP/80)
+- A **NAT Gateway** (via `terraform-az-fk-natgw`) for outbound internet access
 
 Each VM runs an identical NGINX service but remains an **independent compute unit**.
 
