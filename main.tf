@@ -2,6 +2,8 @@
 
 locals {
   public_ip_name_effective = coalesce(var.public_ip_name, "${var.name}-public-ip")
+  create_public_ip         = var.public_lb && var.create_public_ip
+  frontend_public_ip_id    = var.public_lb ? (var.create_public_ip ? try(azurerm_public_ip.this[0].id, null) : var.public_ip_id) : null
 
   # Ensure stable / explicit defaults
   rule_idle_timeout_in_minutes = try(var.rule.idle_timeout_in_minutes, null)
@@ -12,7 +14,7 @@ locals {
 }
 
 resource "azurerm_public_ip" "this" {
-  count = var.public_lb ? 1 : 0
+  count = local.create_public_ip ? 1 : 0
 
   name                = local.public_ip_name_effective
   location            = var.location
@@ -22,6 +24,13 @@ resource "azurerm_public_ip" "this" {
   sku               = var.public_ip_sku
 
   tags = var.tags
+
+  lifecycle {
+    precondition {
+      condition     = !var.public_lb || var.create_public_ip || var.public_ip_id != null
+      error_message = "public_ip_id must be provided when public_lb is true and create_public_ip is false."
+    }
+  }
 }
 
 resource "azurerm_lb" "this" {
@@ -32,7 +41,7 @@ resource "azurerm_lb" "this" {
 
   frontend_ip_configuration {
     name                 = var.frontend_name
-    public_ip_address_id = var.public_lb ? azurerm_public_ip.this[0].id : null
+    public_ip_address_id = local.frontend_public_ip_id
   }
 
   tags = var.tags

@@ -113,6 +113,50 @@ module "loadbalancer" {
 }
 ```
 
+If you already manage a Public IP outside this module, pass its ID with
+`public_ip_id` and set `create_public_ip = false`. In that mode, the module
+attaches the existing Public IP to the frontend instead of creating a new one.
+
+```hcl
+module "public_ip" {
+  source = "git::https://github.com/mlinxfeld/terraform-az-fk-public-ip.git?ref=v1.0.0"
+
+  name                = "fk-shared-pip"
+  location            = "westeurope"
+  resource_group_name = "fk-rg"
+}
+
+module "loadbalancer" {
+  source = "git::https://github.com/mlinxfeld/terraform-az-fk-loadbalancer.git?ref=v1.0.0"
+
+  name                = "fk-public-lb"
+  location            = "westeurope"
+  resource_group_name = "fk-rg"
+
+  public_lb         = true
+  create_public_ip  = false
+  public_ip_id      = module.public_ip.id
+
+  frontend_name     = "PublicLBIP"
+  backend_pool_name = "fk-backend-pool"
+
+  probe = {
+    name                = "http-probe"
+    protocol            = "Tcp"
+    port                = 80
+    interval_in_seconds = 5
+    number_of_probes    = 2
+  }
+
+  rule = {
+    name          = "http"
+    protocol      = "Tcp"
+    frontend_port = 80
+    backend_port  = 80
+  }
+}
+```
+
 ---
 
 ## 📤 Outputs
@@ -122,8 +166,8 @@ module "loadbalancer" {
 | `lb_id` | Load Balancer resource ID |
 | `lb_name` | Load Balancer name |
 | `frontend_ip_configuration_name` | Frontend IP configuration name |
-| `public_ip_id` | Public IP resource ID (if public_lb=true) |
-| `public_ip_address` | Public IP address (if public_lb=true) |
+| `public_ip_id` | Public IP resource ID, either created by the module or provided externally |
+| `public_ip_address` | Public IP address when created by the module; `null` when an existing Public IP is attached |
 | `backend_pool_id` | Backend Address Pool ID |
 | `probe_id` | ID of the health probe |
 | `rule_id` | ID of the load balancing rule |

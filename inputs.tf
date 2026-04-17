@@ -32,6 +32,18 @@ variable "public_lb" {
   default     = true
 }
 
+variable "create_public_ip" {
+  description = "When true and public_lb=true, the module creates its own Public IP. Set to false when supplying an existing public_ip_id."
+  type        = bool
+  default     = true
+}
+
+variable "public_ip_id" {
+  description = "Existing Public IP resource ID to attach to the frontend. When null and public_lb=true, the module creates its own Public IP."
+  type        = string
+  default     = null
+}
+
 variable "sku" {
   description = "Load Balancer SKU. Standard recommended."
   type        = string

@@ -16,13 +16,13 @@ output "frontend_ip_configuration_name" {
 }
 
 output "public_ip_id" {
-  description = "Public IP resource ID (if public_lb=true)."
-  value       = var.public_lb ? azurerm_public_ip.this[0].id : null
+  description = "Public IP resource ID (if public_lb=true), either created by the module or provided externally."
+  value       = var.public_lb ? (var.create_public_ip ? try(azurerm_public_ip.this[0].id, null) : var.public_ip_id) : null
 }
 
 output "public_ip_address" {
-  description = "Public IP address (if public_lb=true)."
-  value       = var.public_lb ? azurerm_public_ip.this[0].ip_address : null
+  description = "Public IP address when created by the module. Null when an existing Public IP ID is supplied."
+  value       = var.public_lb && var.create_public_ip ? azurerm_public_ip.this[0].ip_address : null
 }
 
 output "backend_pool_id" {
