@@ -15,14 +15,24 @@ output "frontend_ip_configuration_name" {
   value       = var.frontend_name
 }
 
+output "frontend_type" {
+  description = "Effective frontend type."
+  value       = local.frontend_type
+}
+
 output "public_ip_id" {
-  description = "Public IP resource ID (if public_lb=true), either created by the module or provided externally."
-  value       = var.public_lb ? (var.create_public_ip ? try(azurerm_public_ip.this[0].id, null) : var.public_ip_id) : null
+  description = "Public IP resource ID when the effective frontend type is public, either created by the module or provided externally."
+  value       = local.frontend_type == "public" ? (var.create_public_ip ? try(azurerm_public_ip.this[0].id, null) : var.public_ip_id) : null
 }
 
 output "public_ip_address" {
-  description = "Public IP address when created by the module. Null when an existing Public IP ID is supplied."
-  value       = var.public_lb && var.create_public_ip ? azurerm_public_ip.this[0].ip_address : null
+  description = "Public IP address when the module creates a public frontend IP. Null for existing public IPs or private frontends."
+  value       = local.frontend_type == "public" && var.create_public_ip ? azurerm_public_ip.this[0].ip_address : null
+}
+
+output "private_ip_address" {
+  description = "Private frontend IP address when the effective frontend type is private."
+  value       = local.frontend_type == "private" ? azurerm_lb.this.frontend_ip_configuration[0].private_ip_address : null
 }
 
 output "backend_pool_id" {

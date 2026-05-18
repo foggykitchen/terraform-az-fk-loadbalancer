@@ -27,9 +27,20 @@ variable "tags" {
 }
 
 variable "public_lb" {
-  description = "When true, creates a public Load Balancer with a Public IP."
+  description = "Backward-compatible switch. When true, the module behaves as a public Load Balancer unless frontend_type is explicitly set. When false, the module behaves as a private Load Balancer unless frontend_type is explicitly set."
   type        = bool
   default     = true
+}
+
+variable "frontend_type" {
+  description = "Optional explicit frontend type. Supported values: public, private. When null, the module preserves backward compatibility by inferring the type from public_lb."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.frontend_type == null || contains(["public", "private"], var.frontend_type)
+    error_message = "var.frontend_type must be null, public, or private."
+  }
 }
 
 variable "create_public_ip" {
@@ -40,6 +51,29 @@ variable "create_public_ip" {
 
 variable "public_ip_id" {
   description = "Existing Public IP resource ID to attach to the frontend. When null and public_lb=true, the module creates its own Public IP."
+  type        = string
+  default     = null
+}
+
+variable "private_frontend_subnet_id" {
+  description = "Subnet ID for a private frontend. Required when the effective frontend type is private."
+  type        = string
+  default     = null
+}
+
+variable "private_ip_address_allocation" {
+  description = "Private frontend IP allocation method. Valid values: Dynamic, Static."
+  type        = string
+  default     = "Dynamic"
+
+  validation {
+    condition     = contains(["Dynamic", "Static"], var.private_ip_address_allocation)
+    error_message = "var.private_ip_address_allocation must be Dynamic or Static."
+  }
+}
+
+variable "private_ip_address" {
+  description = "Optional private frontend IP address. Use with private_ip_address_allocation = Static."
   type        = string
   default     = null
 }

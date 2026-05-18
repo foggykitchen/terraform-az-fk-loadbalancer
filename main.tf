@@ -1,9 +1,10 @@
 # main.tf
 
 locals {
+  frontend_type            = coalesce(var.frontend_type, var.public_lb ? "public" : "private")
   public_ip_name_effective = coalesce(var.public_ip_name, "${var.name}-public-ip")
-  create_public_ip         = var.public_lb && var.create_public_ip
-  frontend_public_ip_id    = var.public_lb ? (var.create_public_ip ? try(azurerm_public_ip.this[0].id, null) : var.public_ip_id) : null
+  create_public_ip         = local.frontend_type == "public" && var.create_public_ip
+  frontend_public_ip_id    = local.frontend_type == "public" ? (var.create_public_ip ? try(azurerm_public_ip.this[0].id, null) : var.public_ip_id) : null
 
   # Ensure stable / explicit defaults
   rule_idle_timeout_in_minutes = try(var.rule.idle_timeout_in_minutes, null)
@@ -27,8 +28,8 @@ resource "azurerm_public_ip" "this" {
 
   lifecycle {
     precondition {
-      condition     = !var.public_lb || var.create_public_ip || var.public_ip_id != null
-      error_message = "public_ip_id must be provided when public_lb is true and create_public_ip is false."
+      condition     = local.frontend_type != "public" || var.create_public_ip || var.public_ip_id != null
+      error_message = "public_ip_id must be provided when using a public frontend and create_public_ip is false."
     }
   }
 }
@@ -40,11 +41,26 @@ resource "azurerm_lb" "this" {
   sku                 = var.sku
 
   frontend_ip_configuration {
-    name                 = var.frontend_name
-    public_ip_address_id = local.frontend_public_ip_id
+    name                          = var.frontend_name
+    public_ip_address_id          = local.frontend_type == "public" ? local.frontend_public_ip_id : null
+    subnet_id                     = local.frontend_type == "private" ? var.private_frontend_subnet_id : null
+    private_ip_address_allocation = local.frontend_type == "private" ? var.private_ip_address_allocation : null
+    private_ip_address            = local.frontend_type == "private" && var.private_ip_address_allocation == "Static" ? var.private_ip_address : null
   }
 
   tags = var.tags
+
+  lifecycle {
+    precondition {
+      condition     = local.frontend_type != "private" || var.private_frontend_subnet_id != null
+      error_message = "private_frontend_subnet_id must be provided when using a private frontend."
+    }
+
+    precondition {
+      condition     = local.frontend_type != "private" || var.private_ip_address_allocation != "Static" || var.private_ip_address != null
+      error_message = "private_ip_address must be provided when using a private frontend with Static allocation."
+    }
+  }
 }
 
 resource "azurerm_lb_backend_address_pool" "this" {

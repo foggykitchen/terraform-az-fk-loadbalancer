@@ -36,6 +36,7 @@ Depending on configuration and example used, the module can:
 
 - Create an **Azure Standard Load Balancer**
 - Create and attach a **public frontend IP**
+- Configure a **private frontend IP** in a selected subnet
 - Define **backend address pools**
 - Configure **health probes**
 - Configure **load balancing rules**
@@ -157,6 +158,48 @@ module "loadbalancer" {
 }
 ```
 
+For an internal Load Balancer, keep the existing public flow untouched and
+switch the frontend explicitly to `private`.
+
+```hcl
+module "loadbalancer" {
+  source = "git::https://github.com/mlinxfeld/terraform-az-fk-loadbalancer.git?ref=v1.0.0"
+
+  name                = "fk-internal-lb"
+  location            = "westeurope"
+  resource_group_name = "fk-rg"
+
+  frontend_type               = "private"
+  frontend_name               = "PrivateLBIP"
+  private_frontend_subnet_id  = module.vnet.subnet_ids["fk-subnet-private"]
+  private_ip_address_allocation = "Static"
+  private_ip_address          = "10.0.2.10"
+
+  backend_pool_name = "fk-backend-pool"
+
+  probe = {
+    name                = "http-probe"
+    protocol            = "Tcp"
+    port                = 80
+    interval_in_seconds = 5
+    number_of_probes    = 2
+  }
+
+  rule = {
+    name          = "http"
+    protocol      = "Tcp"
+    frontend_port = 80
+    backend_port  = 80
+  }
+}
+```
+
+Backward compatibility note:
+
+- existing consumers using `public_lb = true` continue to work unchanged
+- `frontend_type` is optional and only needed when you want to force a specific frontend mode
+- `public_lb = false` now maps cleanly to a private frontend, provided `private_frontend_subnet_id` is supplied
+
 ---
 
 ## 📤 Outputs
@@ -166,8 +209,10 @@ module "loadbalancer" {
 | `lb_id` | Load Balancer resource ID |
 | `lb_name` | Load Balancer name |
 | `frontend_ip_configuration_name` | Frontend IP configuration name |
+| `frontend_type` | Effective frontend type: `public` or `private` |
 | `public_ip_id` | Public IP resource ID, either created by the module or provided externally |
 | `public_ip_address` | Public IP address when created by the module; `null` when an existing Public IP is attached |
+| `private_ip_address` | Private frontend IP address when using a private frontend |
 | `backend_pool_id` | Backend Address Pool ID |
 | `probe_id` | ID of the health probe |
 | `rule_id` | ID of the load balancing rule |
