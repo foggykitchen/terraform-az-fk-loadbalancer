@@ -241,7 +241,7 @@ Balancer mechanics behind “magic” defaults.
 - [terraform-az-fk-natgw](https://github.com/mlinxfeld/terraform-az-fk-natgw)
 - [terraform-az-fk-public-ip](https://github.com/mlinxfeld/terraform-az-fk-public-ip)
 - [terraform-az-fk-disk](https://github.com/mlinxfeld/terraform-az-fk-disk)
-- [terraform-az-fk-storage](https://github.com/mlinxfeld/terraform-az-fk-storage)
+- [terraform-az-fk-storage](https://github.com/foggykitchen/terraform-az-fk-storage)
 - [terraform-az-fk-aks](https://github.com/mlinxfeld/terraform-az-fk-aks)
 
 ---
