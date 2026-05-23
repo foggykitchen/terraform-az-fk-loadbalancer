@@ -81,7 +81,7 @@ terraform-az-fk-loadbalancer/
 
 ```hcl
 module "loadbalancer" {
-  source = "git::https://github.com/mlinxfeld/terraform-az-fk-loadbalancer.git?ref=v1.0.0"
+  source = "git::https://github.com/foggykitchen/terraform-az-fk-loadbalancer.git?ref=v1.0.0"
 
   name                = "fk-public-lb"
   location            = "westeurope"
@@ -128,7 +128,7 @@ module "public_ip" {
 }
 
 module "loadbalancer" {
-  source = "git::https://github.com/mlinxfeld/terraform-az-fk-loadbalancer.git?ref=v1.0.0"
+  source = "git::https://github.com/foggykitchen/terraform-az-fk-loadbalancer.git?ref=v1.0.0"
 
   name                = "fk-public-lb"
   location            = "westeurope"
@@ -163,7 +163,7 @@ switch the frontend explicitly to `private`.
 
 ```hcl
 module "loadbalancer" {
-  source = "git::https://github.com/mlinxfeld/terraform-az-fk-loadbalancer.git?ref=v1.0.0"
+  source = "git::https://github.com/foggykitchen/terraform-az-fk-loadbalancer.git?ref=v1.0.0"
 
   name                = "fk-internal-lb"
   location            = "westeurope"
@@ -237,7 +237,7 @@ Balancer mechanics behind “magic” defaults.
 
 - [terraform-az-fk-vnet](https://github.com/foggykitchen/terraform-az-fk-vnet)
 - [terraform-az-fk-compute](https://github.com/mlinxfeld/terraform-az-fk-compute)
-- [terraform-az-fk-nsg](https://github.com/mlinxfeld/terraform-az-fk-nsg)
+- [terraform-az-fk-nsg](https://github.com/foggykitchen/terraform-az-fk-nsg)
 - [terraform-az-fk-natgw](https://github.com/mlinxfeld/terraform-az-fk-natgw)
 - [terraform-az-fk-public-ip](https://github.com/mlinxfeld/terraform-az-fk-public-ip)
 - [terraform-az-fk-disk](https://github.com/foggykitchen/terraform-az-fk-disk)
