@@ -5,8 +5,10 @@ progressive examples for deploying **Azure Load Balancers** and attaching
 them to **Virtual Machines** and **Virtual Machine Scale Sets (VMSS)** in a
 clean, explicit, and architecture-aware way.
 
-It is part of the **[FoggyKitchen.com training ecosystem](https://foggykitchen.com/courses-2/)** and is designed as
+It is part of the **[FoggyKitchen.com training ecosystem](https://foggykitchen.com/courses/azure-fundamentals-terraform-course/)** and is designed as
 a dedicated **traffic distribution layer** for Azure compute workloads.
+
+This module is also part of the **[Azure Fundamentals with Terraform/OpenTofu — Build Real-World Azure Architectures with Reusable Modules (2026 Edition)](https://foggykitchen.com/courses/azure-fundamentals-terraform-course/)** course. In the training, it is used to show how frontend exposure, health probes, and backend VM attachment fit into modular Azure application designs.
 
 ---
 
